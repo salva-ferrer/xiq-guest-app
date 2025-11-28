@@ -21,5 +21,6 @@
   "auto_password": "Contraseña automática",
   "manual": "Manual",
   "notify_email": "Notificar credenciales por correo",
-  "submit": "Enviar"
+  "submit": "Enviar",
+  "language": "Idioma"
 }

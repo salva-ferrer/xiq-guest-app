@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.requests import Request
 from fastapi.responses import HTMLResponse
-from app.routes import auth, users, smtp_test, groups
+from app.routes import auth, users, smtp_test, groups, locale
 from app.i18n import LocalizationMiddleware, templates
 
 BASE=os.path.dirname(os.path.abspath(__file__))
@@ -17,6 +17,7 @@ app.include_router(auth.router)
 app.include_router(groups.router)
 app.include_router(users.router)
 app.include_router(smtp_test.router)
+app.include_router(locale.router)
 
 @app.get('/', response_class=HTMLResponse)
 def dash(request:Request):

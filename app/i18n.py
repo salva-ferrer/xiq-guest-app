@@ -11,6 +11,7 @@ from starlette.requests import Request
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 LOCALES_DIR = os.path.join(BASE_DIR, "locales")
 DEFAULT_LOCALE = "en"
+LOCALE_COOKIE = "locale"
 
 
 def _available_locales() -> Iterable[str]:
@@ -44,6 +45,9 @@ def parse_accept_language(header_value: str) -> Iterable[str]:
 
 
 def detect_locale(request: Request) -> str:
+    cookie_locale = request.cookies.get(LOCALE_COOKIE)
+    if cookie_locale in AVAILABLE_LOCALES:
+        return cookie_locale
     for locale in parse_accept_language(request.headers.get("accept-language")):
         if locale in AVAILABLE_LOCALES:
             return locale
@@ -59,6 +63,7 @@ def translate(context, key: str) -> str:
 
 templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 templates.env.globals["t"] = translate
+templates.env.globals["available_locales"] = sorted(AVAILABLE_LOCALES)
 
 
 class LocalizationMiddleware(BaseHTTPMiddleware):

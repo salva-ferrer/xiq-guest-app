@@ -21,5 +21,6 @@
   "auto_password": "Auto password",
   "manual": "Manual",
   "notify_email": "Notify credentials by email",
-  "submit": "Submit"
+  "submit": "Submit",
+  "language": "Language"
 }

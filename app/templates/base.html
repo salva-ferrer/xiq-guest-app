@@ -12,6 +12,15 @@
 <a href="/users">{{ t('users') }}</a> |
 <a href="/test_smtp">{{ t('test_smtp') }}</a>
 </nav>
+<form method="post" action="/set-locale" class="locale-selector">
+  <input type="hidden" name="next" value="{{ request.url.path }}">
+  <label for="locale">{{ t('language') }}</label>
+  <select id="locale" name="locale" onchange="this.form.submit()">
+    {% for locale in available_locales %}
+      <option value="{{ locale }}" {% if locale == request.state.locale %}selected{% endif %}>{{ locale|upper }}</option>
+    {% endfor %}
+  </select>
+</form>
 </header>
 <div class="content">{% block content %}{% endblock %}</div>
 </body></html>
