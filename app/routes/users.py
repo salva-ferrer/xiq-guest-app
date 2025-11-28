@@ -10,6 +10,7 @@ router=APIRouter(prefix='/users')
 
 @router.get('/', response_class=HTMLResponse)
 def list_users(request:Request):
+    """Display all users; require a valid session token before calling XIQ."""
     token=request.session.get('token')
     if not token:
         return RedirectResponse('/login', status_code=303)
@@ -23,6 +24,7 @@ def list_users(request:Request):
 
 @router.get('/create', response_class=HTMLResponse)
 def form(request:Request):
+    """Show the user creation form after verifying authentication."""
     token=request.session.get('token')
     if not token:
         return RedirectResponse('/login', status_code=303)
@@ -45,6 +47,7 @@ def create(request:Request,
            password_manual:str=Form(""),
            send_email_flag:str=Form("no")):
 
+    # All data mutations must be authenticated, so verify the session first.
     token=request.session.get('token')
     if not token:
         return RedirectResponse('/login', status_code=303)
@@ -69,6 +72,7 @@ def create(request:Request,
     try:
         user=client.create_user(payload)
     except UnauthorizedError:
+        # Clear the stale token and force re-authentication when the backend rejects it.
         request.session.clear()
         return RedirectResponse('/login', status_code=303)
 
@@ -80,6 +84,7 @@ def create(request:Request,
 
 @router.post('/delete')
 def delete(request:Request,user_id:str=Form(...)):
+    """Remove a user after confirming the session is still valid."""
     token=request.session.get('token')
     if not token:
         return RedirectResponse('/login', status_code=303)
@@ -87,6 +92,7 @@ def delete(request:Request,user_id:str=Form(...)):
     try:
         client.delete_user(user_id)
     except UnauthorizedError:
+        # If the token expired, clear it so the user must log in again.
         request.session.clear()
         return RedirectResponse('/login', status_code=303)
     return RedirectResponse('/users',303)

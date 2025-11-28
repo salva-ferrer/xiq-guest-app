@@ -6,6 +6,7 @@ router=APIRouter(prefix='/groups')
 
 @router.get('/', response_class=HTMLResponse)
 def groups(request:Request):
+    """Render the groups view, redirecting to login if the session is missing."""
     token=request.session.get('token')
     if not token:
         from fastapi.responses import RedirectResponse
@@ -14,6 +15,7 @@ def groups(request:Request):
     try:
         groups=client.list_groups()
     except UnauthorizedError:
+        # Clear the session when the backend rejects our token so the user must log in.
         request.session.clear()
         from fastapi.responses import RedirectResponse
         return RedirectResponse('/login', status_code=303)

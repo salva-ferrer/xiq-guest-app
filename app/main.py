@@ -21,6 +21,7 @@ app.include_router(locale.router)
 
 @app.get('/', response_class=HTMLResponse)
 def dash(request:Request):
+    """Redirect unauthenticated users to login before showing the dashboard."""
     if not request.session.get('token'):
         from fastapi.responses import RedirectResponse
         return RedirectResponse('/login')

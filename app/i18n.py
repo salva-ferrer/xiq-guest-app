@@ -8,6 +8,7 @@ from jinja2 import pass_context
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 
+# Paths and constants used for localization.
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 LOCALES_DIR = os.path.join(BASE_DIR, "locales")
 DEFAULT_LOCALE = "en"
@@ -15,6 +16,7 @@ LOCALE_COOKIE = "locale"
 
 
 def _available_locales() -> Iterable[str]:
+    """Return language codes for all locale JSON files present on disk."""
     if not os.path.isdir(LOCALES_DIR):
         return []
     for filename in os.listdir(LOCALES_DIR):
@@ -27,6 +29,7 @@ AVAILABLE_LOCALES = set(_available_locales()) or {DEFAULT_LOCALE}
 
 @lru_cache(maxsize=16)
 def load_translations(locale: str) -> Dict[str, str]:
+    """Load translations for the requested locale, falling back to default."""
     locale_name = locale if locale in AVAILABLE_LOCALES else DEFAULT_LOCALE
     path = os.path.join(LOCALES_DIR, f"{locale_name}.json")
     if not os.path.exists(path):
@@ -36,6 +39,7 @@ def load_translations(locale: str) -> Dict[str, str]:
 
 
 def parse_accept_language(header_value: str) -> Iterable[str]:
+    """Parse the Accept-Language header and yield language codes by priority."""
     if not header_value:
         return []
     for item in header_value.split(","):
@@ -45,6 +49,7 @@ def parse_accept_language(header_value: str) -> Iterable[str]:
 
 
 def detect_locale(request: Request) -> str:
+    """Determine the locale from cookie preference or Accept-Language header."""
     cookie_locale = request.cookies.get(LOCALE_COOKIE)
     if cookie_locale in AVAILABLE_LOCALES:
         return cookie_locale
@@ -56,6 +61,7 @@ def detect_locale(request: Request) -> str:
 
 @pass_context
 def translate(context, key: str) -> str:
+    """Jinja helper that fetches the translated value or falls back to the key."""
     request: Request = context.get("request")
     translations = getattr(request.state, "translations", {}) if request else {}
     return translations.get(key, key)
@@ -67,6 +73,8 @@ templates.env.globals["available_locales"] = sorted(AVAILABLE_LOCALES)
 
 
 class LocalizationMiddleware(BaseHTTPMiddleware):
+    """Attach detected locale and translations to the request state."""
+
     async def dispatch(self, request: Request, call_next):
         locale = detect_locale(request)
         request.state.locale = locale

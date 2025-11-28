@@ -8,6 +8,7 @@ router = APIRouter()
 
 @router.post("/set-locale")
 def set_locale(request: Request, locale: str = Form(DEFAULT_LOCALE), next: str = Form("/")):
+    """Persist the selected locale in a cookie then redirect back to the page."""
     locale_value = locale if locale in AVAILABLE_LOCALES else DEFAULT_LOCALE
     next_url = next or request.headers.get("referer") or "/"
     response = RedirectResponse(next_url, status_code=303)
