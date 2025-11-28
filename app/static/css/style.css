@@ -1,0 +1,6 @@
+
+body{background:#F2F2F4;color:#1C1A1F;font-family:sans-serif;}
+header{background:#4B0082;padding:10px;color:white;display:flex;align-items:center;}
+header nav a{color:#C6A7FF;margin-left:20px;text-decoration:none;}
+button{background:#7A0CE8;color:white;padding:6px;border:none;}
+table,td,th{border:1px solid #C6A7FF;border-collapse:collapse;padding:4px;}

@@ -1,0 +1,14 @@
+[
+  {
+    "id": "smtp1",
+    "name": "Default SMTP",
+    "host": "mail.aquivatunombre.es",
+    "port": 587,
+    "username": "salva@aquivatunomnbre.es",
+    "password": "P4p4ll0n3t4",
+    "use_tls": true,
+    "from_name": "WiFi new user",
+    "from_email": "salva.ferrer@avtn.es",
+    "is_default": true
+  }
+]
