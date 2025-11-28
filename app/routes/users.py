@@ -1,13 +1,11 @@
 from fastapi import APIRouter,Request,Form
-from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from app.services.xiq_client import XIQClient
 from app.services.user_assoc import UserMailAssoc
 from app.services.config_store import ConfigStore
 from app.services.smtp_mailer import send_email
 from app.utils.generate_password import generate_password
-
-templates=Jinja2Templates(directory='app/templates')
+from app.i18n import templates
 router=APIRouter(prefix='/users')
 
 @router.get('/', response_class=HTMLResponse)

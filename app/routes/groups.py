@@ -1,9 +1,7 @@
 from fastapi import APIRouter,Request
-from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from app.services.xiq_client import XIQClient
-
-templates=Jinja2Templates(directory='app/templates')
+from app.i18n import templates
 router=APIRouter(prefix='/groups')
 
 @router.get('/', response_class=HTMLResponse)

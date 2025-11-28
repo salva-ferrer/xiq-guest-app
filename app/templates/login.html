@@ -1,11 +1,11 @@
 
 {% extends 'base.html' %}
 {% block content %}
-<h2>Login</h2>
+<h2>{{ t('login') }}</h2>
 <form method="post">
-<input name="username" placeholder="Username"><br>
-<input name="password" type="password" placeholder="Password"><br>
-<button>Login</button>
+<input name="username" placeholder="{{ t('username') }}"><br>
+<input name="password" type="password" placeholder="{{ t('password') }}"><br>
+<button>{{ t('login') }}</button>
 </form>
-{% if error %}<p>{{error}}</p>{% endif %}
+{% if error_key %}<p>{{ t(error_key) }}</p>{% endif %}
 {% endblock %}
