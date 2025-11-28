@@ -5,7 +5,7 @@
     "host": "mail.aquivatunombre.es",
     "port": 587,
     "username": "salva.ferrer@aquivatunombre.es",
-    "password": "P4p4ll0n3t4",
+    "password": "verysecurepass",
     "use_tls": true,
     "from_name": "Notifications",
     "from_email": "salva.ferrer@avtn.es",
