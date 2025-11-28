@@ -1,6 +1,6 @@
 from fastapi import APIRouter,Request
 from fastapi.responses import HTMLResponse
-from app.services.xiq_client import XIQClient
+from app.services.xiq_client import XIQClient, UnauthorizedError
 from app.i18n import templates
 router=APIRouter(prefix='/groups')
 
@@ -10,5 +10,12 @@ def groups(request:Request):
     if not token:
         from fastapi.responses import RedirectResponse
         return RedirectResponse('/login', status_code=303)
-    groups=XIQClient(token).list_groups()
+    client = XIQClient(token)
+    try:
+        groups=client.list_groups()
+    except UnauthorizedError:
+        request.session.clear()
+        from fastapi.responses import RedirectResponse
+        return RedirectResponse('/login', status_code=303)
+
     return templates.TemplateResponse('groups.html',{'request':request,'groups':groups})

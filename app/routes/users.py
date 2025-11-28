@@ -1,6 +1,6 @@
 from fastapi import APIRouter,Request,Form
 from fastapi.responses import HTMLResponse, RedirectResponse
-from app.services.xiq_client import XIQClient
+from app.services.xiq_client import XIQClient, UnauthorizedError
 from app.services.user_assoc import UserMailAssoc
 from app.services.config_store import ConfigStore
 from app.services.smtp_mailer import send_email
@@ -13,7 +13,12 @@ def list_users(request:Request):
     token=request.session.get('token')
     if not token:
         return RedirectResponse('/login', status_code=303)
-    users=XIQClient(token).list_users()
+    client = XIQClient(token)
+    try:
+        users=client.list_users()
+    except UnauthorizedError:
+        request.session.clear()
+        return RedirectResponse('/login', status_code=303)
     return templates.TemplateResponse('users.html',{'request':request,'users':users})
 
 @router.get('/create', response_class=HTMLResponse)
@@ -21,7 +26,12 @@ def form(request:Request):
     token=request.session.get('token')
     if not token:
         return RedirectResponse('/login', status_code=303)
-    groups=XIQClient(token).list_groups()
+    client = XIQClient(token)
+    try:
+        groups=client.list_groups()
+    except UnauthorizedError:
+        request.session.clear()
+        return RedirectResponse('/login', status_code=303)
     return templates.TemplateResponse('create_user.html',{'request':request,'groups':groups})
 
 @router.post('/create')
@@ -56,7 +66,11 @@ def create(request:Request,
         "sms_password_delivery": phone_number or None
     }
 
-    user=client.create_user(payload)
+    try:
+        user=client.create_user(payload)
+    except UnauthorizedError:
+        request.session.clear()
+        return RedirectResponse('/login', status_code=303)
 
     if user and cfg and email_address and send_email_flag=="yes":
         text=f"Hello {user_name},\n\nYour account was created.\nUser: {user_name}\nPass: {password}\n"
@@ -69,5 +83,10 @@ def delete(request:Request,user_id:str=Form(...)):
     token=request.session.get('token')
     if not token:
         return RedirectResponse('/login', status_code=303)
-    XIQClient(token).delete_user(user_id)
+    client = XIQClient(token)
+    try:
+        client.delete_user(user_id)
+    except UnauthorizedError:
+        request.session.clear()
+        return RedirectResponse('/login', status_code=303)
     return RedirectResponse('/users',303)
