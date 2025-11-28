@@ -11,12 +11,16 @@ router=APIRouter(prefix='/users')
 @router.get('/', response_class=HTMLResponse)
 def list_users(request:Request):
     token=request.session.get('token')
+    if not token:
+        return RedirectResponse('/login', status_code=303)
     users=XIQClient(token).list_users()
     return templates.TemplateResponse('users.html',{'request':request,'users':users})
 
 @router.get('/create', response_class=HTMLResponse)
 def form(request:Request):
     token=request.session.get('token')
+    if not token:
+        return RedirectResponse('/login', status_code=303)
     groups=XIQClient(token).list_groups()
     return templates.TemplateResponse('create_user.html',{'request':request,'groups':groups})
 
@@ -32,6 +36,8 @@ def create(request:Request,
            send_email_flag:str=Form("no")):
 
     token=request.session.get('token')
+    if not token:
+        return RedirectResponse('/login', status_code=303)
     app_user=request.session.get('app_user')
     assoc=UserMailAssoc()
     cfg_id=assoc.get(app_user)
@@ -61,5 +67,7 @@ def create(request:Request,
 @router.post('/delete')
 def delete(request:Request,user_id:str=Form(...)):
     token=request.session.get('token')
+    if not token:
+        return RedirectResponse('/login', status_code=303)
     XIQClient(token).delete_user(user_id)
     return RedirectResponse('/users',303)
