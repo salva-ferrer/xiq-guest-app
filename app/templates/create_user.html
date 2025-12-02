@@ -1,28 +1,28 @@
 
 {% extends 'base.html' %}
 {% block content %}
-<h2>Create User</h2>
+<h2>{{ t('create_user') }}</h2>
 <form method="post">
 <select name="user_group_id">
 {% for g in groups %}
 <option value="{{g.id}}">{{g.name}}</option>
 {% endfor %}
 </select><br>
-<input name="user_name" placeholder="Username"><br>
-<input name="name" placeholder="Name"><br>
-<input name="email_address" placeholder="Email"><br>
-<input name="phone_number" placeholder="Phone"><br>
+<input name="user_name" placeholder="{{ t('username') }}"><br>
+<input name="name" placeholder="{{ t('name') }}"><br>
+<input name="email_address" placeholder="{{ t('email') }}"><br>
+<input name="phone_number" placeholder="{{ t('phone') }}"><br>
 
 <label><input type="radio" name="password_choice" value="auto" checked>
-Auto password</label>
+{{ t('auto_password') }}</label>
 
 <label><input type="radio" name="password_choice" value="manual">
-Manual</label>
+{{ t('manual') }}</label>
 
-<input name="password_manual" placeholder="Manual password"><br>
+<input name="password_manual" placeholder="{{ t('manual_password') }}"><br>
 
-<label><input type="checkbox" name="send_email_flag" value="yes"> Notify credentials by email</label><br>
+<label><input type="checkbox" name="send_email_flag" value="yes"> {{ t('notify_email') }}</label><br>
 
-<button>Create</button>
+<button>{{ t('submit') }}</button>
 </form>
 {% endblock %}

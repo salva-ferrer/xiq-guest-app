@@ -1,9 +1,7 @@
 from fastapi import APIRouter,Request,Form
-from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from app.services.xiq_client import XIQClient
-
-templates=Jinja2Templates(directory='app/templates')
+from app.i18n import templates
 router=APIRouter()
 
 @router.get('/login', response_class=HTMLResponse)
@@ -17,4 +15,4 @@ def login(request:Request, username:str=Form(...), password:str=Form(...)):
         request.session['token']=c.token
         request.session['app_user']=username
         return RedirectResponse('/',303)
-    return templates.TemplateResponse('login.html',{'request':request,'error':'Login failed'})
+    return templates.TemplateResponse('login.html',{'request':request,'error_key':'login_failed'})

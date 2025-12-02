@@ -1,10 +1,10 @@
 
 {% extends 'base.html' %}
 {% block content %}
-<h2>User Groups</h2>
+<h2>{{ t('user_groups') }}</h2>
 <ul>
 {% for g in groups %}
-<li>{{g.name}} (ID: {{g.id}})</li>
+<li>{{g.name}} ({{ t('id') }}: {{g.id}})</li>
 {% endfor %}
 </ul>
 {% endblock %}
